@@ -10,9 +10,10 @@ def add_digits_loop(num):
     while len(str(num))>1:
         new_num = 0
         for digit in str(num):
-            new_num += int(digit)
+            if digit.isnumeric():
+                new_num += int(digit)
         num = new_num
     return num
 
 
-print("Your digit of life is " + str(add_digits_loop(input("Find out your digit of life! Enter your birthday number in this format: MMDDYYYY\n"))) + "!")
+print("Your digit of life is " + str(add_digits_loop(input("Find out your digit of life! Enter your birthday number in this format: MM/DD/YYYY\n"))) + "!")
