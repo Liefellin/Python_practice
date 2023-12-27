@@ -3,16 +3,50 @@
 # File Search
 # This program will display all paths to a given directory name
 import os
+from pathlib import Path
+
+
+def findplib(path, dir):
+    tagged = []
+
+    home = Path(path)
+
+    def checktag(path):
+        return path in tagged
+
+    def leavetag(path):
+        tagged.append(path)
+
+    volatile_path = home
+
+    while True:
+        tags = 0
+        if checktag(home):
+            break
+        if not [thing for thing in volatile_path.iterdir()]:
+            leavetag(volatile_path)
+        if checktag(volatile_path):
+            volatile_path = volatile_path.parent
+        for branch in volatile_path.iterdir():
+            if checktag(volatile_path / branch):
+                tags += 1
+                if tags >= len([thing for thing in volatile_path.iterdir()]):
+                    leavetag(volatile_path)
+                    volatile_path = volatile_path.parent
+                    break
+            elif str(branch.name) == dir:
+                yield f"{volatile_path / branch}"
+                leavetag(volatile_path / branch)
+            else:
+                volatile_path = volatile_path / branch
+                break
 
 
 def find(path, dir):
     tagged = []
 
     def checktag(path):
-        if path in tagged:
-            return True
-        else:
-            return False
+        return path in tagged
 
     def leavetag(path):
         tagged.append(path)
@@ -49,4 +83,5 @@ def find(path, dir):
                 break
 
 
-print(find("C:\\Users\\weyke\\Documents\\Coding\\Work\\Files\\tree", "python"))
+for i in findplib("C:\\Users\\weyke\\Documents\\Coding\\Work\\Files\\tree", "python"):
+    print (i)
